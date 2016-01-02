@@ -50,6 +50,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private Marker myMarker;
     private Marker placeMarker;
     private PolylineOptions plyOptions;
+    private GoogleApiClient googleClient;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -70,32 +71,27 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         enableMyLocation();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            enableMyLocation();
-        } else {
-            mPermissionDenied = true;
-        }
-    }
 
-    private void enableMyLocation() {
+
+    public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             PermissionUtils.requestPermission(((AppCompatActivity) getContext()), LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
+            Log.e(TAG," request permission");
         } else if (mMap != null) {
             mMap.setMyLocationEnabled(true);
+            findMyLocation();
         }
     }
 
-    public void findMyLocation(GoogleApiClient googleApiClient) {
+    public void findMyLocation() {
+        Log.e(TAG,"FInd my location");
         final User user = MainActivity.getUser();
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(googleApiClient, null);
+        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(googleClient, null);
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
@@ -156,4 +152,18 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         startActivity(new Intent(getActivity(), RoutesActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
 
     }
+
+    public void setGoogleClient(GoogleApiClient googleClient) {
+        this.googleClient = googleClient;
+    }
+
+
+    public boolean isPermissionDenied() {
+        return mPermissionDenied;
+    }
+
+    public void setPermissionDenied(boolean mPermissionDenied) {
+        this.mPermissionDenied = mPermissionDenied;
+    }
+
 }

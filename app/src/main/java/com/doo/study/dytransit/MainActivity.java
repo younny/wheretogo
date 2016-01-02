@@ -1,5 +1,6 @@
 package com.doo.study.dytransit;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.doo.study.dytransit.POJO.RouteSet;
 import com.doo.study.dytransit.fragment.MapFragment;
 import com.doo.study.dytransit.model.User;
+import com.doo.study.dytransit.utils.PermissionUtils;
 import com.doo.study.dytransit.view.MySearchView;
 import com.doo.study.dytransit.view.PlaceAutoComplete;
 import com.doo.study.dytransit.view.adapter.PlaceAutocompleteAdapter;
@@ -212,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .add(R.id.fragment_map_container, mapFragment, MapFragment.TAG)
                     .commit();
         }
+        mapFragment.setGoogleClient(googleClient);
     }
 
     @Override
@@ -243,10 +246,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 searchView.setText(nameView.getText().toString());
             }
         });
-//                QueryRoutes();
+        PlaceAutocompleteAdapter adapter = new PlaceAutocompleteAdapter(this, R.layout.auto_view_row);
+        adapter.setGoogleApiClient(googleClient);
+        searchView.setAdapter(adapter);
 
 
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mapFragment.enableMyLocation();
+            Log.e(TAG,"request is granted");
+        } else {
+            mapFragment.setPermissionDenied(true);
+        }
     }
 
     private ResultCallback<PlaceBuffer> updatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
@@ -277,11 +292,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mapFragment.findMyLocation(googleClient);
-
-        PlaceAutocompleteAdapter adapter = new PlaceAutocompleteAdapter(this, R.layout.auto_view_row);
-        adapter.setGoogleApiClient(googleClient);
-        searchView.setAdapter(adapter);
     }
 
     @Override
