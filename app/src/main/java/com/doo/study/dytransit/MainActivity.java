@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -15,7 +14,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -26,14 +24,12 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.doo.study.dytransit.POJO.RouteSet;
-import com.doo.study.dytransit.fragment.MapFragment;
+import com.doo.study.dytransit.fragment.HomeMapFragment;
 import com.doo.study.dytransit.model.User;
 import com.doo.study.dytransit.utils.PermissionUtils;
 import com.doo.study.dytransit.view.MySearchView;
 import com.doo.study.dytransit.view.PlaceAutoComplete;
 import com.doo.study.dytransit.view.adapter.PlaceAutocompleteAdapter;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
@@ -46,15 +42,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 //    private final int REQUEST_CODE_ASK_PERMISSION = 1421;
 
-    private GoogleApiClient googleClient;
     private ProgressDialog progressDialog;
 
-    private MapFragment mapFragment;
+    private HomeMapFragment homeMapFragment;
     protected MySearchView searchView;
 
     private static RouteSet routeSet;
@@ -113,19 +107,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        QueryRoutes();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (googleClient != null)
-            googleClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (googleClient != null)
-            googleClient.disconnect();
-    }
 
     @Override
     public void onBackPressed() {
@@ -159,15 +140,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return true;
     }
 
-    private void ConnectGoogleService() {
-        googleClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-    }
 
     private void LoadMapData() {
         try {
@@ -207,14 +179,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void ShowMap() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mapFragment = (MapFragment) fragmentManager.findFragmentByTag(MapFragment.TAG);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance();
+        homeMapFragment = (HomeMapFragment) fragmentManager.findFragmentByTag(HomeMapFragment.TAG);
+        if (homeMapFragment == null) {
+            homeMapFragment = HomeMapFragment.newInstance();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_map_container, mapFragment, MapFragment.TAG)
+                    .add(R.id.fragment_map_container, homeMapFragment, HomeMapFragment.TAG)
                     .commit();
         }
-        mapFragment.setGoogleClient(googleClient);
+        homeMapFragment.setGoogleClient(googleClient);
     }
 
     @Override
@@ -257,10 +229,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            mapFragment.enableMyLocation();
-            Log.e(TAG,"request is granted");
+            homeMapFragment.enableMyLocation();
+            Log.e(TAG, "request is granted");
         } else {
-            mapFragment.setPermissionDenied(true);
+            homeMapFragment.setPermissionDenied(true);
         }
     }
 
@@ -276,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     + "\n" + Html.fromHtml(place.getId())
                     + "\n" + Html.fromHtml(String.valueOf(place.getLatLng())
                     + "\n" + Html.fromHtml(place.getAddress().toString())));
-            mapFragment.findLocation(place);
+            homeMapFragment.findLocation(place);
             searchView.clearFocus();
             places.release();
         }
@@ -287,21 +259,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         progressDialog.setMessage(getString(R.string.searching_routes));
         progressDialog.setCancelable(false);
         progressDialog.show();
-    }
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "Google Places API connection failed with error code: " + connectionResult.getErrorCode());
     }
 
 
