@@ -15,7 +15,9 @@ Setup
 -----
 It requires Android 6.0 Marshmallow version or higher.
 
-Add the following to your `build.gradle`:
+Enter your API key in the api xml. You can find it in AndroidMenifest.xml
+
+And, add the following to your `build.gradle` if you don't have :
 
 	dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
