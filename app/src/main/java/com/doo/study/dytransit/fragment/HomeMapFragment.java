@@ -154,7 +154,6 @@ public class HomeMapFragment extends BaseMapFragment implements GoogleMap.OnMyLo
     @Override
     public void onInfoWindowClick(Marker marker) {
         startActivity(new Intent(getActivity(), RoutesActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-
     }
 
 
