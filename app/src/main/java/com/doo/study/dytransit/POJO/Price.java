@@ -1,9 +1,11 @@
 package com.doo.study.dytransit.POJO;
 
+import java.io.Serializable;
+
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class Price {
+public class Price implements Serializable{
     private String currency;
     private int amount;
 

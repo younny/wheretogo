@@ -1,17 +1,19 @@
 package com.doo.study.dytransit.POJO;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class Route {
+public class Route implements Serializable{
 
     private String type; //car_sharing, private_bike, bike_sharing, taxi, public_transport
     private String provider;
     private List<Segment> segments;
     private Price price;
     private Properties properties;
+
 
     public Properties getProperties() {
         return properties;

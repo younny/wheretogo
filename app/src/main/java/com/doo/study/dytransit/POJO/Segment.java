@@ -2,12 +2,13 @@ package com.doo.study.dytransit.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class Segment {
+public class Segment implements Serializable{
     private String name;
 
     @SerializedName("num_stops")

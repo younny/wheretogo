@@ -1,9 +1,11 @@
 package com.doo.study.dytransit.POJO;
 
+import java.io.Serializable;
+
 /**
  * Created by dooyoungki on 12/31/15.
  */
-public class Stop {
+public class Stop implements Serializable{
 
     private double lat;
     private double lng;

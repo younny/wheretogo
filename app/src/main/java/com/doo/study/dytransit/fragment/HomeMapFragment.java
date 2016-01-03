@@ -20,7 +20,6 @@ import com.doo.study.dytransit.MainActivity;
 import com.doo.study.dytransit.RoutesActivity;
 import com.doo.study.dytransit.model.User;
 import com.doo.study.dytransit.utils.PermissionUtils;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
@@ -29,35 +28,29 @@ import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 
 
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener{
-    public static final String TAG = MapFragment.class.getSimpleName();
+public class HomeMapFragment extends BaseMapFragment implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener{
+    public static final String TAG = HomeMapFragment.class.getSimpleName();
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private Marker myMarker;
     private Marker placeMarker;
-    private PolylineOptions plyOptions;
-    private GoogleApiClient googleClient;
 
-    public static MapFragment newInstance() {
-        return new MapFragment();
+    public static HomeMapFragment newInstance() {
+        return new HomeMapFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG,"map create view");
         View v = super.onCreateView(inflater, container, savedInstanceState);
         getMapAsync(this);
         return v;
@@ -65,13 +58,24 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         enableMyLocation();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG,"map destroy");
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG,"map detach");
+    }
 
     public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -153,9 +157,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
-    public void setGoogleClient(GoogleApiClient googleClient) {
-        this.googleClient = googleClient;
-    }
 
 
     public boolean isPermissionDenied() {
