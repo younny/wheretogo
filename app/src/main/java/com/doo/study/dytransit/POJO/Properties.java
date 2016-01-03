@@ -1,11 +1,12 @@
 package com.doo.study.dytransit.POJO;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class Properties {
+public class Properties implements Serializable {
     //car
     private String address;
     private String model;
@@ -24,7 +25,7 @@ public class Properties {
     //taxi
     private List<Company> companies;
 
-    public static class Company{
+    public static class Company implements Serializable{
         private String name;
         private String phone;
     }

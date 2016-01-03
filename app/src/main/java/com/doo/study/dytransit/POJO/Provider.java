@@ -1,12 +1,13 @@
 package com.doo.study.dytransit.POJO;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by dooyoungki on 12/30/15.
  */
-public class Provider {
+public class Provider implements Serializable {
 
     private Map<String, Map<String, String>> attributes = new HashMap<>();
 
