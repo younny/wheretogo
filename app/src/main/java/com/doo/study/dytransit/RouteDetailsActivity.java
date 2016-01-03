@@ -3,13 +3,11 @@ package com.doo.study.dytransit;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.widget.ExpandableListView;
 
 import com.doo.study.dytransit.POJO.Route;
 import com.doo.study.dytransit.POJO.Segment;
 import com.doo.study.dytransit.POJO.Stop;
-import com.doo.study.dytransit.fragment.HomeMapFragment;
 import com.doo.study.dytransit.fragment.RouteMapFragment;
 import com.doo.study.dytransit.view.adapter.ExpandableListAdapter;
 
@@ -38,7 +36,6 @@ public class RouteDetailsActivity extends BaseActivity {
 
         segmentsList = (ExpandableListView) findViewById(R.id.segment_list);
         selectedRoute = (Route) getIntent().getSerializableExtra("selected_route");
-        Log.e(TAG,"selected route : " + selectedRoute.toString());
 
         setSegmentsData();
         showMap();
@@ -61,14 +58,15 @@ public class RouteDetailsActivity extends BaseActivity {
 
     private void showMap() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        routeMapFragment = (RouteMapFragment) fragmentManager.findFragmentByTag(HomeMapFragment.TAG);
+        routeMapFragment = (RouteMapFragment) fragmentManager.findFragmentByTag(RouteMapFragment.TAG);
         if (routeMapFragment == null) {
             routeMapFragment = RouteMapFragment.newInstance();
             fragmentManager.beginTransaction()
-                    .add(R.id.map_container, routeMapFragment, HomeMapFragment.TAG)
+                    .add(R.id.map_container, routeMapFragment, RouteMapFragment.TAG)
                     .commit();
         }
         routeMapFragment.setGoogleClient(getGoogleClient());
+        routeMapFragment.setRoute(selectedRoute);
     }
 
 }
