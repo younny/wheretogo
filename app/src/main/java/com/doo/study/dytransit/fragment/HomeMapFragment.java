@@ -118,6 +118,7 @@ public class HomeMapFragment extends BaseMapFragment implements GoogleMap.OnMyLo
 
     public void findLocation(final Place place){
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 12));
+        MainActivity.getUser().setTo(place);
         if(placeMarker != null){
             placeMarker.remove();
         }

@@ -66,6 +66,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.e(TAG, "on New Intent");
+        LoadMapData();
     }
 
     @Override
