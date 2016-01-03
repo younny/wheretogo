@@ -9,6 +9,7 @@ Where To Go provides the following features:
 * Prediction and auto complete places in search view
 * Calculate likelihood for current Location
 * Detecting nearby places
+* Drawing polyline in route view
 
 Setup
 -----
